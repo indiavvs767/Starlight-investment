@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Starlight Investment</title>
+<title>Starlight Investment Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* ================= THEME ================= */
 :root{
   --bg:#0b0e11;
   --panel:#161a1e;
@@ -15,22 +14,22 @@
   --text:#eaecef;
   --muted:#848e9c;
   --green:#0ecb81;
+  --red:#ff5c5c;
 }
 
 *{
   margin:0;
   padding:0;
   box-sizing:border-box;
-  font-family:"Segoe UI", Inter, monospace;
+  font-family:Consolas, Inter, monospace;
 }
 
 body{
   background:var(--bg);
   color:var(--text);
-  overflow-x:hidden;
 }
 
-/* ================= LOGIN ================= */
+/* LOGIN */
 #login{
   min-height:100vh;
   display:flex;
@@ -42,115 +41,74 @@ body{
 .login-box{
   width:100%;
   max-width:420px;
-  margin:20px;
   background:var(--panel);
-  padding:32px 28px;
-  border-radius:14px;
+  padding:32px;
+  border-radius:16px;
   border:1px solid rgba(240,185,11,.25);
-  box-shadow:0 0 40px rgba(240,185,11,.15);
+  box-shadow:0 0 50px rgba(240,185,11,.2);
 }
 
 .login-box h1{
   color:var(--accent);
   text-align:center;
-  font-size:26px;
-  margin-bottom:6px;
+  margin-bottom:8px;
 }
 
 .login-box p{
   text-align:center;
   color:var(--muted);
-  margin-bottom:24px;
+  margin-bottom:22px;
 }
 
 .login-box input{
   width:100%;
   padding:14px;
+  margin-bottom:14px;
   background:#0b0e11;
   border:1px solid #2b3139;
   border-radius:8px;
   color:var(--text);
-  margin-bottom:16px;
-  font-size:15px;
-}
-
-.login-box input:focus{
-  outline:none;
-  border-color:var(--accent);
-  box-shadow:0 0 10px rgba(240,185,11,.3);
 }
 
 .login-box button{
   width:100%;
   padding:14px;
   background:var(--accent);
-  color:#000;
   border:none;
-  border-radius:8px;
-  font-weight:700;
+  font-weight:800;
   cursor:pointer;
 }
 
-.login-error{
-  color:#ff5c5c;
-  font-size:14px;
-  text-align:center;
-  margin-bottom:12px;
-}
+/* APP */
+#app{display:none;}
 
-/* ================= APP ================= */
-#app{
-  display:none;
-  min-height:100vh;
-}
-
-/* Overlay */
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
-  z-index:9;
-}
-
-/* Sidebar */
+/* SIDEBAR */
 .sidebar{
   position:fixed;
-  top:0;
-  left:-260px;
+  inset:0 auto 0 -260px;
   width:260px;
-  height:100%;
   background:var(--panel);
-  border-right:1px solid #1e2329;
   padding:24px;
-  transition:transform .35s ease;
+  transition:.35s;
   z-index:10;
 }
 
-.sidebar.active{
-  transform:translateX(260px);
-}
+.sidebar.active{transform:translateX(260px);}
 
 .sidebar h2{
   color:var(--accent);
-  margin-bottom:30px;
-}
-
-.sidebar ul{
-  list-style:none;
+  margin-bottom:26px;
+  font-size:18px;
 }
 
 .sidebar li{
+  list-style:none;
   padding:14px 0;
   border-bottom:1px solid #1e2329;
   cursor:pointer;
 }
 
-.sidebar li:hover{
-  color:var(--accent);
-}
-
-/* Main */
+/* MAIN */
 .main{
   padding:28px;
 }
@@ -162,19 +120,18 @@ body{
   padding:10px 16px;
   border-radius:8px;
   cursor:pointer;
-  margin-bottom:25px;
 }
 
-/* Dashboard */
 .welcome{
-  font-size:40px;
+  margin:28px 0;
+  font-size:38px;
   font-weight:900;
   background:linear-gradient(90deg,#f0b90b,#00ffcc);
   -webkit-background-clip:text;
   color:transparent;
-  margin-bottom:28px;
 }
 
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -183,10 +140,9 @@ body{
 
 .card{
   background:var(--panel);
-  border:1px solid #1e2329;
-  border-radius:14px;
+  border-radius:16px;
   padding:22px;
-  box-shadow:0 0 25px rgba(0,0,0,.4);
+  border:1px solid #1e2329;
   transition:.3s;
 }
 
@@ -195,102 +151,100 @@ body{
   box-shadow:0 0 35px rgba(0,255,204,.25);
 }
 
-.card h3{
-  color:var(--muted);
-  margin-bottom:8px;
-}
-
-.card .value{
+.value{
   font-size:26px;
-  font-weight:800;
   color:var(--accent);
+  font-weight:800;
 }
 
-.green{color:var(--green);}
-
-.chart{
+/* LIVE CHART */
+.live-chart{
   height:160px;
-  border-radius:10px;
-  background:linear-gradient(135deg,#0b0e11,#161a1e);
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+}
+
+.live-chart span{
+  flex:1;
+  background:linear-gradient(to top,var(--neon),transparent);
+  animation:pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse{
+  0%,100%{height:40%}
+  50%{height:100%}
+}
+
+/* TRANSACTIONS */
+.tx{
+  padding:14px;
+  border-bottom:1px solid #1e2329;
+}
+
+.tx span{
+  color:var(--muted);
+  font-size:13px;
+  display:block;
+  margin-top:6px;
+}
+
+/* FOOTER */
+footer{
+  margin-top:50px;
+  padding:28px;
+  text-align:center;
+  font-size:13px;
+  color:#aaa;
   position:relative;
   overflow:hidden;
+  border-top:1px solid #1e2329;
 }
 
-.chart::after{
+footer::before{
   content:"";
   position:absolute;
   inset:0;
   background:linear-gradient(120deg,transparent,var(--neon),transparent);
-  animation:scan 3s linear infinite;
-  opacity:.25;
+  animation:scan 4s linear infinite;
+  opacity:.15;
 }
 
 @keyframes scan{
   from{transform:translateX(-100%)}
   to{transform:translateX(100%)}
 }
-
-/* Table */
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td{
-  padding:12px;
-  border-bottom:1px solid #1e2329;
-  text-align:left;
-}
-
-th{color:var(--muted);}
-
-footer{
-  margin-top:40px;
-  font-size:13px;
-  color:#aaa;
-  text-align:center;
-}
-
-/* Mobile */
-@media(max-width:480px){
-  .welcome{font-size:30px}
-}
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div id="login">
   <div class="login-box">
     <h1>Starlight Investment</h1>
-    <p>Secure trading access</p>
-    <div class="login-error" id="loginError"></div>
+    <p>Secure Access Portal</p>
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
-    <button onclick="handleLogin()">Login</button>
+    <button onclick="login()">Login</button>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
-  <div class="overlay" id="overlay"></div>
-
   <div class="sidebar" id="sidebar">
-    <h2>Hannatu Reuben</h2>
+    <h2>HANNATU REUBEN’s DASHBOARD!</h2>
     <ul>
-      <li onclick="navigate('dashboard')">Dashboard</li>
-      <li onclick="navigate('portfolio')">Portfolio</li>
-      <li onclick="navigate('transactions')">Transactions</li>
-      <li onclick="navigate('market')">Market</li>
+      <li>Dashboard</li>
+      <li>Portfolio</li>
+      <li>Transactions</li>
+      <li>Market</li>
       <li onclick="logout()">Logout</li>
     </ul>
   </div>
 
   <div class="main">
-    <button class="menu-btn" onclick="openSidebar()">☰ Menu</button>
+    <button class="menu-btn" onclick="sidebar.classList.toggle('active')">☰</button>
 
-    <div class="welcome">Welcome back Hannatu Reuben</div>
+    <div class="welcome">Welcome back, HANNATU REUBEN.</div>
 
     <div class="grid">
       <div class="card">
@@ -299,108 +253,59 @@ footer{
       </div>
 
       <div class="card">
-        <h3>Today's Performance</h3>
-        <div class="value green">+3.2% Interest Growth</div>
-      </div>
-
-      <div class="card">
-        <h3>Live Portfolio</h3>
-        <div class="chart"></div>
+        <h3>Live Growth</h3>
+        <div class="live-chart">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
       </div>
     </div>
 
     <div class="card" style="margin-top:28px">
-      <h3>Transactions History</h3>
-      <table>
-        <tr><th>Date</th><th>Amount</th><th>Interest</th></tr>
-        <tr><td>02 Jan 2026</td><td>$2,000</td><td class="green">$220</td></tr>
-        <tr><td>05 Feb 2026</td><td>$3,000</td><td class="green">$350</td></tr>
-      </table>
+      <h3>Recent Transactions</h3>
+
+      <div class="tx">
+        Dear Hannatu Reuben, your deposit of <b>$2000</b> was successful!
+        <span>2nd January 2026</span>
+      </div>
+
+      <div class="tx">
+        Dear Hannatu Reuben, an interest of <b class="green">$220</b> was just added to your account balance.
+        <span>2nd January 2026</span>
+      </div>
+
+      <div class="tx">
+        Dear Hannatu Reuben, your deposit of <b>$3000</b> was successful!
+        <span>5th February 2026</span>
+      </div>
+
+      <div class="tx">
+        Dear Hannatu Reuben, an interest of <b class="green">$300</b> was just added to your main account balance.
+        <span>5th February 2026</span>
+      </div>
     </div>
 
     <footer>
-      © 2026 Starlight Investment. Licensed & regulated. Investments involve risk.
+      © 2026 Starlight Investment • System Status: <span style="color:var(--green)">LIVE</span><br>
+      Encrypted • Monitored • Real-Time Investment Engine
     </footer>
   </div>
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const AUTH_EMAIL = "joygirl@gmail.com";
-const AUTH_PASS  = "joyie";
-const SESSION_KEY = "starlight_session";
-const SESSION_DAYS = 365;
+const AUTH_EMAIL="joygirl@gmail.com";
+const AUTH_PASS="joyie";
 
-/* ================= DOM ================= */
-const loginPage = document.getElementById("login");
-const appPage = document.getElementById("app");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const loginError = document.getElementById("loginError");
-const sidebar = document.getElementById("sidebar");
-const overlay = document.getElementById("overlay");
-
-/* ================= SESSION ================= */
-function setSession(){
-  const expiry = Date.now() + SESSION_DAYS*24*60*60*1000;
-  localStorage.setItem(SESSION_KEY, expiry);
-}
-
-function hasSession(){
-  const expiry = localStorage.getItem(SESSION_KEY);
-  return expiry && Date.now() < expiry;
-}
-
-function clearSession(){
-  localStorage.removeItem(SESSION_KEY);
-}
-
-/* ================= LOGIN ================= */
-function handleLogin(){
-  if(emailInput.value === AUTH_EMAIL && passwordInput.value === AUTH_PASS){
-    setSession();
-    loginPage.style.display = "none";
-    appPage.style.display = "block";
-  } else {
-    loginError.textContent = "Invalid login credentials";
+function login(){
+  if(email.value===AUTH_EMAIL && password.value===AUTH_PASS){
+    login.style.display="none";
+    app.style.display="block";
   }
 }
 
-/* ================= LOGOUT ================= */
 function logout(){
-  clearSession();
-  appPage.style.display = "none";
-  loginPage.style.display = "flex";
-  emailInput.value = "";
-  passwordInput.value = "";
-  loginError.textContent = "";
+  app.style.display="none";
+  login.style.display="flex";
 }
-
-/* ================= SIDEBAR ================= */
-function openSidebar(){
-  sidebar.classList.add("active");
-  overlay.style.display = "block";
-}
-
-overlay.onclick = () => {
-  sidebar.classList.remove("active");
-  overlay.style.display = "none";
-};
-
-/* ================= NAV ================= */
-function navigate(section){
-  console.log("Navigate to:", section);
-  sidebar.classList.remove("active");
-  overlay.style.display = "none";
-}
-
-/* ================= INIT ================= */
-window.addEventListener("load",()=>{
-  if(hasSession()){
-    loginPage.style.display="none";
-    appPage.style.display="block";
-  }
-});
 </script>
 
 </body>
