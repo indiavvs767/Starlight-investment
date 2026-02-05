@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-/* ================= BINANCE-STYLE THEME ================= */
+/* ================= THEME ================= */
 :root{
   --bg:#0b0e11;
   --panel:#161a1e;
@@ -17,8 +17,18 @@
   --green:#0ecb81;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family: "Segoe UI", Inter, monospace;}
-body{background:var(--bg);color:var(--text);overflow-x:hidden}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI", Inter, monospace;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+}
 
 /* ================= LOGIN ================= */
 #login{
@@ -26,14 +36,15 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden}
   display:flex;
   align-items:center;
   justify-content:center;
-  background:
-    radial-gradient(circle at top, #1e2329, #0b0e11);
+  background:radial-gradient(circle at top,#1e2329,#0b0e11);
 }
 
 .login-box{
-  width:380px;
+  width:100%;
+  max-width:420px;
+  margin:20px;
   background:var(--panel);
-  padding:45px;
+  padding:32px 28px;
   border-radius:14px;
   border:1px solid rgba(240,185,11,.25);
   box-shadow:0 0 40px rgba(240,185,11,.15);
@@ -42,14 +53,14 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden}
 .login-box h1{
   color:var(--accent);
   text-align:center;
-  font-size:28px;
-  margin-bottom:8px;
+  font-size:26px;
+  margin-bottom:6px;
 }
 
 .login-box p{
   text-align:center;
   color:var(--muted);
-  margin-bottom:30px;
+  margin-bottom:24px;
 }
 
 .login-box input{
@@ -80,10 +91,20 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden}
   cursor:pointer;
 }
 
-/* ================= APP ================= */
-#app{display:none}
+.login-error{
+  color:#ff5c5c;
+  font-size:14px;
+  text-align:center;
+  margin-bottom:12px;
+}
 
-/* Sidebar */
+/* ================= APP ================= */
+#app{
+  display:none;
+  min-height:100vh;
+}
+
+/* Overlay */
 .overlay{
   position:fixed;
   inset:0;
@@ -92,36 +113,47 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden}
   z-index:9;
 }
 
+/* Sidebar */
 .sidebar{
   position:fixed;
-  top:0;left:-260px;
-  width:260px;height:100%;
-  background:#0b0e11;
+  top:0;
+  left:-260px;
+  width:260px;
+  height:100%;
+  background:var(--panel);
   border-right:1px solid #1e2329;
-  padding:25px;
-  transition:.35s;
+  padding:24px;
+  transition:transform .35s ease;
   z-index:10;
 }
 
-.sidebar.active{left:0}
+.sidebar.active{
+  transform:translateX(260px);
+}
 
 .sidebar h2{
   color:var(--accent);
   margin-bottom:30px;
 }
 
-.sidebar li{
+.sidebar ul{
   list-style:none;
-  padding:14px 0;
-  color:var(--text);
-  cursor:pointer;
-  border-bottom:1px solid #1e2329;
 }
 
-.sidebar li:hover{color:var(--accent)}
+.sidebar li{
+  padding:14px 0;
+  border-bottom:1px solid #1e2329;
+  cursor:pointer;
+}
+
+.sidebar li:hover{
+  color:var(--accent);
+}
 
 /* Main */
-.main{padding:30px}
+.main{
+  padding:28px;
+}
 
 .menu-btn{
   background:transparent;
@@ -133,14 +165,14 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden}
   margin-bottom:25px;
 }
 
-/* ================= DASHBOARD ================= */
+/* Dashboard */
 .welcome{
-  font-size:42px;
+  font-size:40px;
   font-weight:900;
   background:linear-gradient(90deg,#f0b90b,#00ffcc);
   -webkit-background-clip:text;
   color:transparent;
-  margin-bottom:30px;
+  margin-bottom:28px;
 }
 
 .grid{
@@ -153,7 +185,7 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden}
   background:var(--panel);
   border:1px solid #1e2329;
   border-radius:14px;
-  padding:25px;
+  padding:22px;
   box-shadow:0 0 25px rgba(0,0,0,.4);
   transition:.3s;
 }
@@ -163,43 +195,66 @@ body{background:var(--bg);color:var(--text);overflow-x:hidden}
   box-shadow:0 0 35px rgba(0,255,204,.25);
 }
 
-.card h3{color:var(--muted);margin-bottom:8px}
-.card .value{font-size:28px;font-weight:800;color:var(--accent)}
-.green{color:var(--green)}
+.card h3{
+  color:var(--muted);
+  margin-bottom:8px;
+}
 
-/* Fake chart */
+.card .value{
+  font-size:26px;
+  font-weight:800;
+  color:var(--accent);
+}
+
+.green{color:var(--green);}
+
 .chart{
   height:160px;
-  background:linear-gradient(135deg,#0b0e11,#161a1e);
   border-radius:10px;
+  background:linear-gradient(135deg,#0b0e11,#161a1e);
   position:relative;
   overflow:hidden;
 }
+
 .chart::after{
   content:"";
   position:absolute;
   inset:0;
   background:linear-gradient(120deg,transparent,var(--neon),transparent);
-  animation:move 3s linear infinite;
+  animation:scan 3s linear infinite;
   opacity:.25;
 }
-@keyframes move{
-  0%{transform:translateX(-100%)}
-  100%{transform:translateX(100%)}
+
+@keyframes scan{
+  from{transform:translateX(-100%)}
+  to{transform:translateX(100%)}
 }
 
-/* Transactions */
+/* Table */
 table{
   width:100%;
   border-collapse:collapse;
 }
+
 th,td{
   padding:12px;
   border-bottom:1px solid #1e2329;
   text-align:left;
 }
-th{color:var(--muted)}
-td{color:var(--text)}
+
+th{color:var(--muted);}
+
+footer{
+  margin-top:40px;
+  font-size:13px;
+  color:#aaa;
+  text-align:center;
+}
+
+/* Mobile */
+@media(max-width:480px){
+  .welcome{font-size:30px}
+}
 </style>
 </head>
 
@@ -210,9 +265,10 @@ td{color:var(--text)}
   <div class="login-box">
     <h1>Starlight Investment</h1>
     <p>Secure trading access</p>
+    <div class="login-error" id="loginError"></div>
     <input id="email" placeholder="Email">
     <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+    <button onclick="handleLogin()">Login</button>
   </div>
 </div>
 
@@ -221,7 +277,7 @@ td{color:var(--text)}
   <div class="overlay" id="overlay"></div>
 
   <div class="sidebar" id="sidebar">
-    <h2>Joyie</h2>
+    <h2>Hannatu Reuben</h2>
     <ul>
       <li onclick="navigate('dashboard')">Dashboard</li>
       <li onclick="navigate('portfolio')">Portfolio</li>
@@ -234,7 +290,7 @@ td{color:var(--text)}
   <div class="main">
     <button class="menu-btn" onclick="openSidebar()">☰ Menu</button>
 
-    <div class="welcome">Welcome back, Joyie</div>
+    <div class="welcome">Welcome back Hannatu Reuben</div>
 
     <div class="grid">
       <div class="card">
@@ -243,7 +299,7 @@ td{color:var(--text)}
       </div>
 
       <div class="card">
-        <h3>Today’s Performance</h3>
+        <h3>Today's Performance</h3>
         <div class="value green">+3.2% Interest Growth</div>
       </div>
 
@@ -253,38 +309,98 @@ td{color:var(--text)}
       </div>
     </div>
 
-    <div class="card" style="margin-top:30px">
+    <div class="card" style="margin-top:28px">
       <h3>Transactions History</h3>
       <table>
-        <tr>
-          <th>Date</th><th>Amount</th><th>Interest</th>
-        </tr>
-        <tr>
-          <td>02 Jan 2026</td><td>$2,000</td><td class="green">$220</td>
-        </tr>
-        <tr>
-          <td>05 Feb 2026</td><td>$3,000</td><td class="green">$350</td>
-        </tr>
+        <tr><th>Date</th><th>Amount</th><th>Interest</th></tr>
+        <tr><td>02 Jan 2026</td><td>$2,000</td><td class="green">$220</td></tr>
+        <tr><td>05 Feb 2026</td><td>$3,000</td><td class="green">$350</td></tr>
       </table>
     </div>
+
+    <footer>
+      © 2026 Starlight Investment. Licensed & regulated. Investments involve risk.
+    </footer>
   </div>
 </div>
 
 <script>
-const EMAIL="joygirl@gmail.com", PASS="joyie";
-function login(){
-  if(email.value===EMAIL && password.value===PASS){
-    login.style.display="none";
-    app.style.display="block";
+/* ================= CONFIG ================= */
+const AUTH_EMAIL = "joygirl@gmail.com";
+const AUTH_PASS  = "joyie";
+const SESSION_KEY = "starlight_session";
+const SESSION_DAYS = 365;
+
+/* ================= DOM ================= */
+const loginPage = document.getElementById("login");
+const appPage = document.getElementById("app");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const loginError = document.getElementById("loginError");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+
+/* ================= SESSION ================= */
+function setSession(){
+  const expiry = Date.now() + SESSION_DAYS*24*60*60*1000;
+  localStorage.setItem(SESSION_KEY, expiry);
+}
+
+function hasSession(){
+  const expiry = localStorage.getItem(SESSION_KEY);
+  return expiry && Date.now() < expiry;
+}
+
+function clearSession(){
+  localStorage.removeItem(SESSION_KEY);
+}
+
+/* ================= LOGIN ================= */
+function handleLogin(){
+  if(emailInput.value === AUTH_EMAIL && passwordInput.value === AUTH_PASS){
+    setSession();
+    loginPage.style.display = "none";
+    appPage.style.display = "block";
+  } else {
+    loginError.textContent = "Invalid login credentials";
   }
 }
+
+/* ================= LOGOUT ================= */
+function logout(){
+  clearSession();
+  appPage.style.display = "none";
+  loginPage.style.display = "flex";
+  emailInput.value = "";
+  passwordInput.value = "";
+  loginError.textContent = "";
+}
+
+/* ================= SIDEBAR ================= */
 function openSidebar(){
   sidebar.classList.add("active");
-  overlay.style.display="block";
+  overlay.style.display = "block";
 }
-overlay.onclick=()=>{sidebar.classList.remove("active");overlay.style.display="none"}
-function logout(){location.reload()}
-function navigate(x){console.log("Navigate to:",x)}
+
+overlay.onclick = () => {
+  sidebar.classList.remove("active");
+  overlay.style.display = "none";
+};
+
+/* ================= NAV ================= */
+function navigate(section){
+  console.log("Navigate to:", section);
+  sidebar.classList.remove("active");
+  overlay.style.display = "none";
+}
+
+/* ================= INIT ================= */
+window.addEventListener("load",()=>{
+  if(hasSession()){
+    loginPage.style.display="none";
+    appPage.style.display="block";
+  }
+});
 </script>
 
 </body>
