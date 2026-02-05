@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Starlight Investment Dashboard</title>
+<title>Starlight Investment – Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 :root{
@@ -17,49 +18,53 @@
   --red:#ff5c5c;
 }
 
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Consolas, Inter, monospace;
-}
-
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box}
 body{
   background:var(--bg);
   color:var(--text);
+  font-family:Inter, Consolas, monospace;
+  overflow-x:hidden;
+}
+
+/* MICRO MOTION */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:.7s ease;
+}
+.reveal.show{
+  opacity:1;
+  transform:none;
 }
 
 /* LOGIN */
-#login{
+#loginView{
   min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
   background:radial-gradient(circle at top,#1e2329,#0b0e11);
 }
-
 .login-box{
   width:100%;
   max-width:420px;
   background:var(--panel);
-  padding:32px;
+  padding:34px;
   border-radius:16px;
   border:1px solid rgba(240,185,11,.25);
-  box-shadow:0 0 50px rgba(240,185,11,.2);
+  box-shadow:0 0 60px rgba(240,185,11,.15);
 }
-
 .login-box h1{
   color:var(--accent);
   text-align:center;
-  margin-bottom:8px;
+  margin-bottom:6px;
 }
-
 .login-box p{
-  text-align:center;
   color:var(--muted);
+  text-align:center;
   margin-bottom:22px;
 }
-
 .login-box input{
   width:100%;
   padding:14px;
@@ -69,7 +74,6 @@ body{
   border-radius:8px;
   color:var(--text);
 }
-
 .login-box button{
   width:100%;
   padding:14px;
@@ -78,43 +82,62 @@ body{
   font-weight:800;
   cursor:pointer;
 }
+.login-error{
+  text-align:center;
+  color:#ff5c5c;
+  margin-bottom:10px;
+  font-size:14px;
+}
+
+/* PIN UI */
+.pin{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-bottom:18px;
+}
+.pin span{
+  width:14px;height:14px;
+  border-radius:50%;
+  border:1px solid var(--accent);
+}
 
 /* APP */
-#app{display:none;}
+#appView{display:none}
 
 /* SIDEBAR */
 .sidebar{
   position:fixed;
-  inset:0 auto 0 -260px;
-  width:260px;
+  top:0;left:-260px;
+  width:260px;height:100%;
   background:var(--panel);
   padding:24px;
-  transition:.35s;
-  z-index:10;
+  transition:.35s ease;
+  z-index:20;
 }
-
-.sidebar.active{transform:translateX(260px);}
-
+.sidebar.active{left:0}
 .sidebar h2{
+  font-size:16px;
+  letter-spacing:.12em;
   color:var(--accent);
-  margin-bottom:26px;
-  font-size:18px;
+  margin-bottom:30px;
 }
-
 .sidebar li{
   list-style:none;
   padding:14px 0;
   border-bottom:1px solid #1e2329;
   cursor:pointer;
 }
+.sidebar li:hover{
+  color:var(--accent);
+}
 
 /* MAIN */
 .main{
   padding:28px;
 }
-
 .menu-btn{
-  background:transparent;
+  background:none;
   border:1px solid var(--accent);
   color:var(--accent);
   padding:10px 16px;
@@ -122,9 +145,10 @@ body{
   cursor:pointer;
 }
 
+/* HEADER */
 .welcome{
-  margin:28px 0;
-  font-size:38px;
+  margin:26px 0;
+  font-size:36px;
   font-weight:900;
   background:linear-gradient(90deg,#f0b90b,#00ffcc);
   -webkit-background-clip:text;
@@ -137,7 +161,6 @@ body{
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
   gap:20px;
 }
-
 .card{
   background:var(--panel);
   border-radius:16px;
@@ -145,48 +168,74 @@ body{
   border:1px solid #1e2329;
   transition:.3s;
 }
-
 .card:hover{
   transform:translateY(-6px);
   box-shadow:0 0 35px rgba(0,255,204,.25);
 }
-
-.value{
-  font-size:26px;
-  color:var(--accent);
-  font-weight:800;
-}
-
-/* LIVE CHART */
-.live-chart{
-  height:160px;
-  display:flex;
-  align-items:flex-end;
-  gap:6px;
-}
-
-.live-chart span{
-  flex:1;
-  background:linear-gradient(to top,var(--neon),transparent);
-  animation:pulse 2s infinite ease-in-out;
-}
-
-@keyframes pulse{
-  0%,100%{height:40%}
-  50%{height:100%}
-}
-
-/* TRANSACTIONS */
-.tx{
-  padding:14px;
-  border-bottom:1px solid #1e2329;
-}
-
-.tx span{
-  color:var(--muted);
+.card h3{
   font-size:13px;
-  display:block;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.value{
+  font-size:30px;
+  font-weight:900;
+  color:var(--accent);
+}
+
+/* TRANSACTION / ACTIVITY FEED */
+.activity{
+  margin-top:30px;
+}
+.activity-item{
+  position:relative;
+  padding:16px;
+  border-bottom:1px solid #1e2329;
+  font-size:14px;
+}
+.activity-item.new{
+  border-left:3px solid var(--neon);
+  background:rgba(0,255,204,.04);
+}
+.activity-item.interest{
+  animation:interestPulse 2.5s ease-in-out infinite;
+}
+@keyframes interestPulse{
+  0%,100%{box-shadow:none}
+  50%{box-shadow:0 0 14px rgba(0,255,204,.25)}
+}
+.activity-item .meta{
   margin-top:6px;
+  font-size:12px;
+  color:var(--muted);
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+.tx-id{letter-spacing:.08em;}
+.status{
+  padding:2px 8px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:700;
+}
+.status.completed{background:rgba(14,203,129,.15); color:var(--green);}
+.status.credited{background:rgba(0,255,204,.12); color:var(--neon);}
+.balance-after{margin-top:6px;font-size:12px;color:var(--accent);}
+
+/* STATUS BAR */
+.status-bar{
+  position:fixed;
+  bottom:0;
+  width:100%;
+  padding:6px;
+  font-size:12px;
+  text-align:center;
+  background:#0b0e11;
+  border-top:1px solid #1e2329;
+  color:var(--green);
+  letter-spacing:.08em;
 }
 
 /* FOOTER */
@@ -196,42 +245,39 @@ footer{
   text-align:center;
   font-size:13px;
   color:#aaa;
-  position:relative;
-  overflow:hidden;
   border-top:1px solid #1e2329;
 }
 
-footer::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:linear-gradient(120deg,transparent,var(--neon),transparent);
-  animation:scan 4s linear infinite;
-  opacity:.15;
-}
-
-@keyframes scan{
-  from{transform:translateX(-100%)}
-  to{transform:translateX(100%)}
+/* MOBILE */
+@media(max-width:480px){
+  .welcome{font-size:30px}
 }
 </style>
 </head>
 
 <body>
 
-<div id="login">
+<!-- LOGIN -->
+<div id="loginView">
   <div class="login-box">
     <h1>Starlight Investment</h1>
-    <p>Secure Access Portal</p>
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+    <p>Biometric Secure Access</p>
+    <div class="login-error" id="loginError"></div>
+
+    <div class="pin">
+      <span></span><span></span><span></span><span></span>
+    </div>
+
+    <input id="emailInput" placeholder="Email">
+    <input id="passwordInput" type="password" placeholder="Password">
+    <button onclick="login()">Authenticate</button>
   </div>
 </div>
 
-<div id="app">
+<!-- APP -->
+<div id="appView">
   <div class="sidebar" id="sidebar">
-    <h2>HANNATU REUBEN’s DASHBOARD!</h2>
+    <h2>HANNATU REUBEN’S DASHBOARD!</h2>
     <ul>
       <li>Dashboard</li>
       <li>Portfolio</li>
@@ -242,70 +288,160 @@ footer::before{
   </div>
 
   <div class="main">
-    <button class="menu-btn" onclick="sidebar.classList.toggle('active')">☰</button>
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 
-    <div class="welcome">Welcome back, HANNATU REUBEN.</div>
+    <div class="welcome reveal">Welcome back, HANNATU REUBEN.</div>
 
     <div class="grid">
-      <div class="card">
+      <div class="card reveal">
         <h3>Main Balance</h3>
-        <div class="value">$5,570.00</div>
+        <div class="value" id="balance">$0.00</div>
       </div>
 
-      <div class="card">
-        <h3>Live Growth</h3>
-        <div class="live-chart">
-          <span></span><span></span><span></span><span></span><span></span>
-        </div>
+      <div class="card reveal">
+        <h3>Market Overview</h3>
+        <canvas id="marketChart" height="120"></canvas>
       </div>
     </div>
 
-    <div class="card" style="margin-top:28px">
-      <h3>Recent Transactions</h3>
-
-      <div class="tx">
-        Dear Hannatu Reuben, your deposit of <b>$2000</b> was successful!
-        <span>2nd January 2026</span>
-      </div>
-
-      <div class="tx">
-        Dear Hannatu Reuben, an interest of <b class="green">$220</b> was just added to your account balance.
-        <span>2nd January 2026</span>
-      </div>
-
-      <div class="tx">
-        Dear Hannatu Reuben, your deposit of <b>$3000</b> was successful!
-        <span>5th February 2026</span>
-      </div>
-
-      <div class="tx">
-        Dear Hannatu Reuben, an interest of <b class="green">$300</b> was just added to your main account balance.
-        <span>5th February 2026</span>
-      </div>
+    <div class="activity card reveal">
+      <h3>Recent Activity</h3>
+      <div id="activityFeed"></div>
     </div>
 
     <footer>
-      © 2026 Starlight Investment • System Status: <span style="color:var(--green)">LIVE</span><br>
-      Encrypted • Monitored • Real-Time Investment Engine
+      © 2026 Starlight Investment<br>
+      AES-256 Encrypted • Zero-Trust Architecture • AI-Risk Monitored<br>
+      Status: <span style="color:var(--green)">OPERATIONAL</span>
     </footer>
   </div>
 </div>
 
+<div class="status-bar">
+  SYSTEM LIVE • SYNC OK • LATENCY 42ms
+</div>
+
 <script>
+/* CONFIG */
 const AUTH_EMAIL="joygirl@gmail.com";
 const AUTH_PASS="joyie";
+const SESSION_KEY="starlight_session";
+const SESSION_DURATION=365*24*60*60*1000;
 
+/* DOM */
+const loginView=document.getElementById("loginView");
+const appView=document.getElementById("appView");
+const emailInput=document.getElementById("emailInput");
+const passwordInput=document.getElementById("passwordInput");
+const loginError=document.getElementById("loginError");
+const sidebar=document.getElementById("sidebar");
+const balanceEl=document.getElementById("balance");
+
+/* SESSION */
+function setSession(){localStorage.setItem(SESSION_KEY,Date.now()+SESSION_DURATION);}
+function hasSession(){const s=localStorage.getItem(SESSION_KEY);return s && Date.now()<s;}
+function clearSession(){localStorage.removeItem(SESSION_KEY);}
+
+/* LOGIN */
 function login(){
-  if(email.value===AUTH_EMAIL && password.value===AUTH_PASS){
-    login.style.display="none";
-    app.style.display="block";
+  if(emailInput.value===AUTH_EMAIL && passwordInput.value===AUTH_PASS){
+    setSession();
+    loginView.style.display="none";
+    appView.style.display="block";
+    initDashboard();
+  } else {
+    loginError.textContent="Invalid login credentials";
   }
 }
-
 function logout(){
-  app.style.display="none";
-  login.style.display="flex";
+  clearSession();
+  appView.style.display="none";
+  loginView.style.display="flex";
+  emailInput.value="";
+  passwordInput.value="";
+  loginError.textContent="";
 }
+
+/* SIDEBAR + TOUCH */
+function toggleSidebar(){sidebar.classList.toggle("active");}
+let startX=0;
+document.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+document.addEventListener("touchend",e=>{
+  if(e.changedTouches[0].clientX-startX>80) sidebar.classList.add("active");
+});
+
+/* COUNT UP */
+function countUp(el,target){
+  let v=0;
+  const i=setInterval(()=>{
+    v+=target/60;
+    el.textContent="$"+v.toFixed(2);
+    if(v>=target){clearInterval(i);el.textContent="$"+target.toFixed(2);}
+  },16);
+}
+
+/* CHART */
+function initChart(){
+  new Chart(marketChart,{
+    type:"line",
+    data:{
+      labels:["Mon","Tue","Wed","Thu","Fri"],
+      datasets:[{
+        data:[5200,5400,5300,5570,5700],
+        borderColor:"#00ffcc",
+        tension:.4
+      }]
+    },
+    options:{plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false}}}
+  });
+}
+
+/* TRANSACTION ENGINE */
+const transactions=[
+  {id:"TXN-2001",type:"deposit",amount:2000,date:"2nd Jan 2026",status:"Completed"},
+  {id:"TXN-2002",type:"interest",amount:220,date:"2nd Jan 2026",status:"Credited"},
+  {id:"TXN-3001",type:"deposit",amount:3000,date:"5th Feb 2026",status:"Completed"},
+  {id:"TXN-3002",type:"interest",amount:300,date:"5th Feb 2026",status:"Credited"}
+];
+function renderTransactions(){
+  const feed=document.getElementById("activityFeed");
+  feed.innerHTML="";
+  let runningBalance=0;
+  transactions.forEach(tx=>{
+    runningBalance+=tx.amount;
+    const item=document.createElement("div");
+    item.className=`activity-item ${tx.type==="interest"?"interest":""} ${tx.type==="deposit"?"new":""}`;
+    item.innerHTML=`
+      ${tx.type==="deposit"?"💰":"📈"} 
+      <b>${tx.type==="deposit"?"Deposit":"Interest"} of $${tx.amount.toLocaleString()}</b> 
+      ${tx.type==="interest"?"credited from investment":"successful"}
+      <div class="meta">
+        <span class="tx-id">${tx.id}</span>
+        <span>${tx.date}</span>
+        <span class="status ${tx.status.toLowerCase()}">${tx.status}</span>
+      </div>
+      <div class="balance-after">Balance after transaction: $${runningBalance.toLocaleString()}</div>
+    `;
+    feed.appendChild(item);
+  });
+}
+
+/* INIT DASHBOARD */
+function initDashboard(){
+  countUp(balanceEl,5570);
+  initChart();
+  renderTransactions();
+  document.querySelectorAll(".reveal").forEach(el=>setTimeout(()=>el.classList.add("show"),200));
+}
+
+/* AUTO LOGIN IF SESSION */
+window.onload=()=>{
+  if(hasSession()){
+    loginView.style.display="none";
+    appView.style.display="block";
+    initDashboard();
+  }
+};
 </script>
 
 </body>
