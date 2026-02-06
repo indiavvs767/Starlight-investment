@@ -398,7 +398,7 @@ function initChart(){
 
 /* TRANSACTION ENGINE */
 const transactions=[
-  {id:"TXN-2001",type:"deposit",amount:2000,date:"2nd Jan 2026",status:"Completed"},
+  {id:"TXN-2001",type:"deposit",amount:2200,date:"2nd Jan 2026",status:"Completed"},
   {id:"TXN-2002",type:"interest",amount:220,date:"2nd Jan 2026",status:"Credited"},
   {id:"TXN-3001",type:"deposit",amount:3000,date:"5th Feb 2026",status:"Completed"},
   {id:"TXN-3002",type:"interest",amount:300,date:"5th Feb 2026",status:"Credited"}
@@ -428,7 +428,7 @@ function renderTransactions(){
 
 /* INIT DASHBOARD */
 function initDashboard(){
-  countUp(balanceEl,5570);
+  countUp(balanceEl,5770);
   initChart();
   renderTransactions();
   document.querySelectorAll(".reveal").forEach(el=>setTimeout(()=>el.classList.add("show"),200));
